@@ -1,0 +1,1 @@
+`$ db.runCommand({convertToCapped: 'chat', size: 8192})`
