@@ -1,4 +1,4 @@
-package io.jay.springbootmongochat;
+package io.jay.springbootmongochat.chat;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

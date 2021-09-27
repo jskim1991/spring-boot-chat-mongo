@@ -1,4 +1,4 @@
-package io.jay.springbootmongochat;
+package io.jay.springbootmongochat.chat;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

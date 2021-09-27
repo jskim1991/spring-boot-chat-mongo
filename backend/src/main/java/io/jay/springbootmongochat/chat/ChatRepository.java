@@ -1,6 +1,5 @@
-package io.jay.springbootmongochat;
+package io.jay.springbootmongochat.chat;
 
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.data.mongodb.repository.Tailable;
 import reactor.core.publisher.Flux;
