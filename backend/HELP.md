@@ -3,8 +3,10 @@
 
 `$ mongo`
 
-`$ use chatdb`
+`$ use chat`
+`$ db.chat.find().pretty()`
 
+tailable cursor requested on non capped collection' on server localhost:27017
 `$ db.runCommand({convertToCapped: 'chat', size: 8192})`
 
 #For OrderServiceTests
