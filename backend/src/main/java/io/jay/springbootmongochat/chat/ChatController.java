@@ -9,7 +9,6 @@ import reactor.core.scheduler.Schedulers;
 import java.time.LocalDateTime;
 
 @RestController
-@CrossOrigin
 public class ChatController {
 
     private final ChatRepository chatRepository;
@@ -18,20 +17,14 @@ public class ChatController {
         this.chatRepository = chatRepository;
     }
 
-    @GetMapping(value = "/sender/{sender}/receiver/{receiver}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Chat> getMessageBySenderAndReceiver(@PathVariable String sender, @PathVariable String receiver) {
-        return chatRepository.findBySenderAndReceiver(sender, receiver)
-                .subscribeOn(Schedulers.boundedElastic());
-    }
-
-    @GetMapping(value = "/chat/roomNumber/{roomNumber}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Chat> getMessageByRoomNumber(@PathVariable Integer roomNumber) {
-        return chatRepository.findByRoomNumber(roomNumber)
+    @GetMapping(value = "/chat/id/{chatId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Chat> getMessages(@PathVariable Integer chatId) {
+        return chatRepository.findByChatId(chatId)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
     @PostMapping("/chat")
-    public Mono<Chat> setMessage(@RequestBody Chat chat) {
+    public Mono<Chat> newMessage(@RequestBody Chat chat) {
         chat.setCreatedAt(LocalDateTime.now());
         return chatRepository.save(chat);
     }

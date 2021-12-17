@@ -1,29 +1,29 @@
+import React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import './styles.css'
 
 const Chat = () => {
-    const [incoming, setIncoming] = useState([])
+    const [chatMessages, setChatMessages] = useState([])
     const [listening, setListening] = useState(false)
-    const [roomNo, setRoomNo] = useState(1)
+    const [chatId, setChatId] = useState(1)
     const [username, setUsername] = useState(null)
     const inputRef = useRef()
     const scrollRef = useRef()
 
     useEffect(() => {
-        let username = prompt('enter id')
-        // let roomNumber = prompt("enter chat room number")
-        const roomNumber = 1
+        const usernameInput = prompt('enter id')
+        // const chatIdInput = prompt('enter chat room number')
+        const chatIdInput = 1
 
-        const eventSource = new EventSource(`http://localhost:8080/chat/roomNumber/${roomNumber}`)
+        const eventSource = new EventSource(`/api/chat/id/${chatIdInput}`)
         if (!listening) {
             eventSource.onmessage = (event) => {
                 const data = JSON.parse(event.data)
-                console.log('data', data)
-                setIncoming((prevState) => [...prevState, data])
+                setChatMessages((prevState) => [...prevState, data])
             }
-            setUsername(username)
-            setRoomNo(roomNumber)
+            setUsername(usernameInput)
+            setChatId(chatIdInput)
             setListening(true)
         }
 
@@ -34,20 +34,18 @@ const Chat = () => {
 
     useEffect(() => {
         scrollRef.current.scrollTop = scrollRef.current?.scrollHeight
-    }, [incoming])
+    }, [chatMessages])
 
     const sendHandler = async () => {
-        console.log(inputRef.current.value)
         if (inputRef.current.value.length === 0) {
             return
         }
-        const result = await axios.post('/chat', {
+        await axios.post('/api/chat', {
             sender: username,
             receiver: '',
             message: inputRef.current.value,
-            roomNumber: roomNo,
+            chatId: chatId,
         })
-        console.log('axios post', result)
         clearInput()
     }
 
@@ -73,8 +71,8 @@ const Chat = () => {
     return (
         <div className="container">
             <div className="chat-box" ref={scrollRef}>
-                {incoming &&
-                    incoming.map((m, index) => {
+                {chatMessages &&
+                    chatMessages.map((m, index) => {
                         return m.sender === username ? (
                             <div key={index} className={`message ${m.sender === username ? 'message__mine' : ''}`}>
                                 <span className="message-time">{getTime(m.createdAt)}</span>

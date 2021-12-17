@@ -49,7 +49,7 @@ public class TailableChatRepositoryTests {
                 .expectNextCount(1)
                 .verifyComplete();
 
-        repository.findByRoomNumber(1)
+        repository.findByChatId(1)
                 .doOnNext(chats::add)
                 .subscribe();
 
@@ -71,7 +71,7 @@ public class TailableChatRepositoryTests {
         chat.setReceiver("receiver");
         chat.setMessage("New message");
         chat.setCreatedAt(LocalDateTime.now());
-        chat.setRoomNumber(roomNumber);
+        chat.setChatId(roomNumber);
         return repository.save(chat);
     }
 }
