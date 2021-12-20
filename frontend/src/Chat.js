@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import './styles.css'
 
+const API_URL = process.env.NODE_ENV === 'production' ? 'http://localhost:9090' : '/api'
+
 const Chat = () => {
     const [chatMessages, setChatMessages] = useState([])
     const [listening, setListening] = useState(false)
@@ -16,7 +18,7 @@ const Chat = () => {
         // const chatIdInput = prompt('enter chat room number')
         const chatIdInput = 1
 
-        const eventSource = new EventSource(`/api/chat/id/${chatIdInput}`)
+        const eventSource = new EventSource(`${API_URL}/chat/id/${chatIdInput}`)
         if (!listening) {
             eventSource.onmessage = (event) => {
                 const data = JSON.parse(event.data)
@@ -40,7 +42,7 @@ const Chat = () => {
         if (inputRef.current.value.length === 0) {
             return
         }
-        await axios.post('/api/chat', {
+        await axios.post(`${API_URL}/chat`, {
             sender: username,
             receiver: '',
             message: inputRef.current.value,

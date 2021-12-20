@@ -1,29 +1,20 @@
 const path = require('path')
-const fs = require('fs')
+
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-
-const appDirectory = fs.realpathSync(process.cwd())
-const resolveAppPath = (relativePath) => path.resolve(appDirectory, relativePath)
-
-const host = process.env.HOST || 'localhost'
-
-process.env.NODE_ENV = 'development'
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
-    mode: 'development',
-    entry: resolveAppPath('src'),
-    resolve: {
-        extensions: ['.js', '.jsx'],
-    },
+    entry: './src/index.js',
+
     output: {
-        path: resolveAppPath('dist'),
-        filename: 'app.js',
+        publicPath: '',
+        path: path.join(__dirname, 'dist'),
+        filename: 'app.[contenthash].js',
     },
 
     devServer: {
         compress: false,
-        hot: true,
-        host,
         port: 3000,
         proxy: {
             '/api/*': {
@@ -38,7 +29,7 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                include: resolveAppPath('src'),
+                include: path.join(__dirname, 'src'),
                 loader: 'babel-loader',
                 options: {
                     presets: [
@@ -53,7 +44,6 @@ module.exports = {
                         ],
                         ['@babel/preset-react', { runtime: 'automatic' }],
                     ],
-                    plugins: ['@babel/plugin-proposal-class-properties', 'react-hot-loader/babel'],
                 },
             },
             {
@@ -64,9 +54,13 @@ module.exports = {
     },
 
     plugins: [
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             inject: true,
-            template: resolveAppPath('public/index.html'),
+            template: path.join(__dirname, 'public/index.html'),
+        }),
+        new WebpackManifestPlugin({
+            fileName: 'manifest.json',
         }),
     ],
 }
